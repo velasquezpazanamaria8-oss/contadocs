@@ -243,7 +243,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
 <body>
 
 <!-- BOTÓN WHATSAPP FLOTANTE -->
-<a href="https://wa.me/51999999999?text=Hola%2C+quiero+información+sobre+ContaDocs" class="wa-float" target="_blank">
+<a href="https://wa.me/51972309300?text=Hola%2C+quiero+información+sobre+ContaDocs" class="wa-float" target="_blank">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.553 4.112 1.524 5.84L0 24l6.335-1.524A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.374l-.36-.214-3.733.898.914-3.643-.234-.374A9.817 9.817 0 012.182 12C2.182 6.578 6.578 2.182 12 2.182S21.818 6.578 21.818 12 17.422 21.818 12 21.818z"/></svg>
   <div class="wa-tooltip">¿Tienes dudas?</div>
 </a>
@@ -265,7 +265,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
     </div>
     <div class="nav-btns">
       <a href="/login.php" class="btn-nav-out">Ingresar</a>
-      <a href="https://wa.me/51999999999?text=Quiero+acceso+a+ContaDocs" class="btn-nav-sol" target="_blank">Solicitar acceso →</a>
+      <a href="https://wa.me/51972309300?text=Quiero+acceso+a+ContaDocs" class="btn-nav-sol" target="_blank">Solicitar acceso →</a>
     </div>
     <button class="nav-mobile-btn" onclick="toggleMenu()" aria-label="Menú">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -277,7 +277,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
     <a href="#planes" onclick="toggleMenu()">Planes</a>
     <a href="#faq" onclick="toggleMenu()">Preguntas frecuentes</a>
     <a href="/login.php" class="btn-nav-out" style="text-align:center;padding:10px">Ingresar al sistema</a>
-    <a href="https://wa.me/51999999999?text=Quiero+acceso+a+ContaDocs" class="btn-nav-sol" target="_blank" style="text-align:center;padding:12px">Solicitar acceso por WhatsApp →</a>
+    <a href="https://wa.me/51972309300?text=Quiero+acceso+a+ContaDocs" class="btn-nav-sol" target="_blank" style="text-align:center;padding:12px">Solicitar acceso por WhatsApp →</a>
   </div>
 </nav>
 
@@ -291,7 +291,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
     <h1>Deja de responder el mismo<br><span class="grad">WhatsApp todos los días</span></h1>
     <p class="hero-sub">Sube la ficha RUC, planillas, PDTs y más. Tus clientes los descargan desde su portal personal. Sin llamadas, sin interrupciones, a cualquier hora.</p>
     <div class="hero-btns">
-      <a href="https://wa.me/51999999999?text=Quiero+acceso+a+ContaDocs" class="btn-hero-p" target="_blank">
+      <a href="https://wa.me/51972309300?text=Quiero+acceso+a+ContaDocs" class="btn-hero-p" target="_blank">
         <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.553 4.112 1.524 5.84L0 24l6.335-1.524A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.374l-.36-.214-3.733.898.914-3.643-.234-.374A9.817 9.817 0 012.182 12C2.182 6.578 6.578 2.182 12 2.182S21.818 6.578 21.818 12 17.422 21.818 12 21.818z"/></svg>
         Solicitar acceso por WhatsApp
       </a>
@@ -522,7 +522,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Descarga para clientes</div>
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Soporte por WhatsApp</div>
         </div>
-        <a href="https://wa.me/51999999999?text=Quiero+el+plan+Básico+de+ContaDocs" class="btn-plan btn-plan-out" target="_blank">Solicitar por WhatsApp</a>
+        <a href="https://wa.me/51972309300?text=Quiero+el+plan+Básico+de+ContaDocs" class="btn-plan btn-plan-out" target="_blank">Solicitar por WhatsApp</a>
       </div>
       <div class="plan-card popular">
         <div class="plan-pop-badge">⭐ Más popular</div>
@@ -535,7 +535,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Control detallado por empresa</div>
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Soporte prioritario</div>
         </div>
-        <a href="https://wa.me/51999999999?text=Quiero+el+plan+Profesional+de+ContaDocs" class="btn-plan btn-plan-sol" target="_blank">Solicitar por WhatsApp</a>
+        <a href="https://wa.me/51972309300?text=Quiero+el+plan+Profesional+de+ContaDocs" class="btn-plan btn-plan-sol" target="_blank">Solicitar por WhatsApp</a>
       </div>
       <div class="plan-card">
         <div class="plan-name">Ilimitado</div>
@@ -547,7 +547,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Precio fijo siempre</div>
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Ideal para estudios grandes</div>
         </div>
-        <a href="https://wa.me/51999999999?text=Quiero+el+plan+Ilimitado+de+ContaDocs" class="btn-plan btn-plan-out" target="_blank">Solicitar por WhatsApp</a>
+        <a href="https://wa.me/51972309300?text=Quiero+el+plan+Ilimitado+de+ContaDocs" class="btn-plan btn-plan-out" target="_blank">Solicitar por WhatsApp</a>
       </div>
     </div>
   </div>
@@ -594,7 +594,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
     <h2>¿Listo para ahorrar horas<br><span>cada semana</span>?</h2>
     <p>Únete a los contadores que ya dejaron de responder el mismo WhatsApp todos los días. Activación en minutos, soporte inmediato.</p>
     <div class="cta-btns">
-      <a href="https://wa.me/51999999999?text=Quiero+acceso+a+ContaDocs" class="btn-cta-wa" target="_blank">
+      <a href="https://wa.me/51972309300?text=Quiero+acceso+a+ContaDocs" class="btn-cta-wa" target="_blank">
         <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.122.553 4.112 1.524 5.84L0 24l6.335-1.524A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.374l-.36-.214-3.733.898.914-3.643-.234-.374A9.817 9.817 0 012.182 12C2.182 6.578 6.578 2.182 12 2.182S21.818 6.578 21.818 12 17.422 21.818 12 21.818z"/></svg>
         Solicitar acceso ahora
       </a>
@@ -617,7 +617,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
     <div class="footer-copy">© 2025 ContaDocs · Hecho para contadores peruanos</div>
     <div class="footer-links">
       <a href="/login.php">Ingresar</a>
-      <a href="https://wa.me/51999999999" target="_blank">WhatsApp</a>
+      <a href="https://wa.me/51972309300" target="_blank">WhatsApp</a>
     </div>
   </div>
 </footer>
