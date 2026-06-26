@@ -1,5 +1,5 @@
 -- ============================================================
--- ContaDocs — Actualización BD: tabla planes + migración
+-- ContaDocs — Actualización BD (versión Hostinger)
 -- Ejecuta en phpMyAdmin > SQL
 -- ============================================================
 
@@ -21,10 +21,10 @@ INSERT IGNORE INTO `planes` (`id`,`nombre`,`precio`,`limite_empresas`,`dias_acce
 (UUID(),'Profesional',99.90,25,30,'Para estudios en crecimiento'),
 (UUID(),'Ilimitado',200.00,999999,30,'Sin límites para grandes estudios');
 
--- 3. Agregar columna plan_id a estudios (si no existe)
+-- 3. Agregar columna plan_id a estudios
 ALTER TABLE `estudios` ADD COLUMN IF NOT EXISTS `plan_id` VARCHAR(36) AFTER `plan`;
 
--- 4. Migrar datos: asignar plan_id según el plan actual (enum)
+-- 4. Migrar datos existentes
 UPDATE `estudios` e
 SET e.plan_id = (
   SELECT p.id FROM planes p
@@ -35,8 +35,4 @@ SET e.plan_id = (
 )
 WHERE e.plan_id IS NULL;
 
--- 5. Ajustar zona horaria MySQL a Lima (UTC-5)
-SET GLOBAL time_zone = '-05:00';
-SET time_zone = '-05:00';
-
--- ¡Listo! Ya puedes usar el sistema actualizado.
+-- ¡Listo! La hora Lima se maneja desde PHP, no MySQL.
