@@ -73,5 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p class="login-footer">¿Problemas? Contacta a tu contador o estudio contable.</p>
   </div>
 </div>
+<script src="/assets/js/app.js"></script>
 </body>
 </html>
