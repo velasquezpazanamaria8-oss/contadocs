@@ -75,3 +75,17 @@ $sec_labels = ['superadmin'=>'Administración','contador'=>'Gestión','cliente'=
     </a>
   </div>
 </aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="cerrarSidebar()"></div>
+<script>
+function abrirSidebar() {
+  document.querySelector('.sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function cerrarSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+</script>

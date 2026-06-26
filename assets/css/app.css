@@ -454,3 +454,84 @@ tbody tr { transition: background .1s; }
   .app-content { padding: 16px; }
   .topbar { padding: 0 16px; }
 }
+
+/* ── MOBILE RESPONSIVE ── */
+.hamburger {
+  display: none;
+  background: none; border: none; cursor: pointer;
+  padding: 8px; color: var(--gris-600);
+}
+.hamburger svg { width: 22px; height: 22px; }
+.sidebar-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 19;
+}
+.sidebar-overlay.open { display: block; }
+
+@media (max-width: 768px) {
+  .hamburger { display: flex; align-items: center; }
+
+  .sidebar {
+    position: fixed; left: -240px; top: 0; bottom: 0;
+    z-index: 20; width: 240px;
+    transition: left .25s ease;
+    box-shadow: none;
+  }
+  .sidebar.open {
+    left: 0;
+    box-shadow: 4px 0 24px rgba(0,0,0,.2);
+  }
+
+  .app-content { padding: 14px; }
+
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar-left h1 { font-size: 14px; }
+  .topbar-left p  { display: none; }
+  .topbar-actions .btn span { display: none; }
+  .topbar-actions .btn { padding: 7px 10px; }
+
+  .metrics-grid { grid-template-columns: 1fr 1fr !important; gap: 10px; }
+  .metric-value { font-size: 22px !important; }
+  .metric-icon  { display: none; }
+
+  .grid-2, .grid-3 { grid-template-columns: 1fr !important; }
+
+  /* Tabla responsive: scroll horizontal */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { min-width: 600px; }
+
+  /* Cards más compactas */
+  .card-header { padding: 12px 14px; }
+  .card-body   { padding: 14px; }
+
+  /* Modales full en móvil */
+  .modal { max-width: 100% !important; margin: 0 10px; padding: 20px; border-radius: 14px; }
+  .modal-overlay { align-items: flex-end; padding: 0; }
+  .modal-overlay .modal { border-radius: 18px 18px 0 0; max-width: 100% !important; margin: 0; }
+
+  /* Ocultar columnas menos importantes en tabla */
+  table th:nth-child(5),
+  table td:nth-child(5),
+  table th:nth-child(8),
+  table td:nth-child(8) { display: none; }
+
+  /* Login en móvil */
+  .login-card { padding: 22px; }
+  .login-logo h1 { font-size: 22px; }
+
+  /* Botones en móvil */
+  .btn-sm { padding: 6px 10px; font-size: 11px; }
+
+  /* Doc cards responsive */
+  .doc-card { flex-wrap: wrap; gap: 10px; }
+  .doc-card .btn { width: 100%; justify-content: center; }
+
+  /* Filtros en columna */
+  form[method="GET"] { flex-direction: column !important; }
+  form[method="GET"] select,
+  form[method="GET"] input { width: 100% !important; min-width: unset !important; }
+}
+
+@media (max-width: 400px) {
+  .metrics-grid { grid-template-columns: 1fr !important; }
+}

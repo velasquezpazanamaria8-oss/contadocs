@@ -1,27 +1,25 @@
 <?php
 require_once __DIR__ . '/../bootstrap.php';
-Auth::requerirRol('cliente');
+Auth::requerirRol('contador');
 $user   = Auth::usuario();
 $doc_id = trim($_GET['id'] ?? '');
-if (!$doc_id) redirect('/cliente/documentos.php');
+if (!$doc_id) redirect('/contador/documentos.php');
 
+// Verificar que el doc pertenece a un cliente de este contador
 $doc = Database::fetch(
-    "SELECT * FROM documentos WHERE id=? AND empresa_id=?",
-    [$doc_id, $user['empresa_id']]
+    "SELECT d.* FROM documentos d
+     JOIN empresas_cliente ec ON d.empresa_id=ec.id
+     WHERE d.id=? AND ec.estudio_id=?",
+    [$doc_id, $user['estudio_id']]
 );
 if (!$doc) { http_response_code(404); echo 'Documento no encontrado'; exit; }
-
-// Registrar descarga
-$log_id = uuid();
-Database::query("INSERT INTO descargas_log (id,documento_id,empresa_id) VALUES (?,?,?)",
-    [$log_id, $doc['id'], $user['empresa_id']]);
 
 $doc_root = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
 $filepath = $doc_root . '/uploads/' . $doc['storage_path'];
 
 if (!file_exists($filepath)) {
     http_response_code(404);
-    echo 'Archivo no disponible';
+    echo 'Archivo no disponible en el servidor. Ruta: ' . $filepath;
     exit;
 }
 
