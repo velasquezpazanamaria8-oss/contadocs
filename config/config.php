@@ -5,9 +5,9 @@
 // ============================================================
 
 define('DB_HOST', '127.0.0.1');
-define('DB_NAME', 'u375417970_contabilidad');
-define('DB_USER', 'u375417970_contabilidad');
-define('DB_PASS', 'PeruTrujillo1**');
+define('DB_NAME', 'u375417970_contaplay');
+define('DB_USER', 'u375417970_contaplay');
+define('DB_PASS', 'Eduarmarina1111****');
 define('DB_CHARSET', 'utf8mb4');
 
 define('APP_NAME', 'ContaDocs');
