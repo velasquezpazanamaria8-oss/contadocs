@@ -535,3 +535,28 @@ tbody tr { transition: background .1s; }
 @media (max-width: 400px) {
   .metrics-grid { grid-template-columns: 1fr !important; }
 }
+
+/* ── FIX MÓVIL SIDEBAR ── */
+@media (max-width: 768px) {
+  /* Sidebar ocupa solo 75% del ancho, no todo */
+  #mainSidebar {
+    width: 75% !important;
+    max-width: 280px !important;
+  }
+
+  /* El contenido principal no se desplaza */
+  .app-main {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Layout no hace flex-row */
+  .app-layout {
+    flex-direction: column !important;
+  }
+
+  /* El sidebar no empuja el contenido */
+  .app-layout > .app-main {
+    margin-left: 0 !important;
+  }
+}
