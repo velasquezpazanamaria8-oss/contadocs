@@ -20,7 +20,28 @@ $nav_cliente = [
 $nav_items  = match($user_rol??'') { 'superadmin'=>$nav_admin, 'contador'=>$nav_contador, default=>$nav_cliente };
 $sec_labels = ['superadmin'=>'Administración','contador'=>'Gestión','cliente'=>'Mi portal'];
 ?>
-<aside class="sidebar">
+
+<!-- Botón hamburguesa SIEMPRE visible en móvil -->
+<button id="btnHamburguesa" onclick="abrirSidebar()" style="
+  display:none;position:fixed;top:12px;left:12px;z-index:200;
+  width:40px;height:40px;border-radius:10px;
+  background:linear-gradient(135deg,#4f6ef7,#0ea472);
+  border:none;cursor:pointer;
+  align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(79,110,247,.4);
+">
+  <svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2.5" width="20" height="20">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+  </svg>
+</button>
+
+<!-- Overlay oscuro al abrir sidebar en móvil -->
+<div id="sidebarOverlay" onclick="cerrarSidebar()" style="
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
+  z-index:29;backdrop-filter:blur(2px);
+"></div>
+
+<aside class="sidebar" id="mainSidebar">
   <div class="sidebar-logo">
     <div class="sidebar-logo-icon">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -28,6 +49,12 @@ $sec_labels = ['superadmin'=>'Administración','contador'=>'Gestión','cliente'=
       </svg>
     </div>
     <span class="sidebar-logo-text">Conta<span>Docs</span></span>
+    <!-- X para cerrar en móvil -->
+    <button onclick="cerrarSidebar()" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--gris-400);display:none" id="btnCerrarSidebar">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="20" height="20">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
   </div>
 
   <div class="sidebar-section">
@@ -46,22 +73,18 @@ $sec_labels = ['superadmin'=>'Administración','contador'=>'Gestión','cliente'=
     <?php if (!empty($user_nombre)): ?>
     <div style="padding:8px 8px 10px">
       <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--gris-50);border-radius:10px;border:1px solid var(--gris-200)">
-        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--azul),var(--verde));display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">
+        <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#4f6ef7,#0ea472);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0">
           <?= strtoupper(substr($user_nombre,0,1)) ?>
         </div>
         <div style="min-width:0">
           <div style="font-size:12px;font-weight:600;color:var(--gris-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= e($user_nombre) ?></div>
           <?php if (!empty($user_plan)): ?>
           <?php
-            try {
-              $planes_all = Database::fetchAll("SELECT * FROM planes WHERE activo=1");
-              $plan_data  = null;
-              foreach ($planes_all as $p) {
-                if ($p['id']===$user_plan || $p['nombre']===$user_plan) { $plan_data=$p; break; }
-              }
-            } catch(Exception $e) { $plan_data = null; }
+            try { $planes_all = Database::fetchAll("SELECT * FROM planes WHERE activo=1"); } catch(Exception $ex) { $planes_all=[]; }
+            $plan_data = null;
+            foreach ($planes_all as $p) { if ($p['id']===$user_plan||$p['nombre']===$user_plan){$plan_data=$p;break;} }
           ?>
-          <div style="font-size:11px;color:var(--gris-400);margin-top:1px"><?= $plan_data ? e($plan_data['nombre']) : e($user_plan) ?></div>
+          <div style="font-size:11px;color:var(--gris-400);margin-top:1px"><?= $plan_data?e($plan_data['nombre']):e($user_plan) ?></div>
           <?php endif; ?>
         </div>
       </div>
@@ -76,16 +99,59 @@ $sec_labels = ['superadmin'=>'Administración','contador'=>'Gestión','cliente'=
   </div>
 </aside>
 
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="cerrarSidebar()"></div>
+<style>
+@media (max-width: 768px) {
+  #btnHamburguesa  { display:inline-flex !important; }
+  #btnCerrarSidebar{ display:block !important; }
+  #mainSidebar {
+    position:fixed;left:-250px;top:0;bottom:0;z-index:30;
+    width:240px;transition:left .25s ease;
+    box-shadow:none;overflow-y:auto;
+  }
+  #mainSidebar.open {
+    left:0;
+    box-shadow:4px 0 32px rgba(0,0,0,.25);
+  }
+  #sidebarOverlay.open { display:block !important; }
+  /* Topbar con espacio para el hamburguesa */
+  .topbar { padding-left:62px !important; }
+  /* Métricas en 2 columnas */
+  .metrics-grid { grid-template-columns:1fr 1fr !important; }
+  /* Grid en columna */
+  .grid-2,.grid-3 { grid-template-columns:1fr !important; }
+  /* Contenido con menos padding */
+  .app-content { padding:14px !important; }
+  /* Topbar compacto */
+  .topbar { height:52px !important; padding-right:12px !important; }
+  .topbar-left p { display:none; }
+  /* Tabla scroll horizontal */
+  .table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  table { min-width:550px; }
+  /* Modales desde abajo en móvil */
+  .modal-overlay { align-items:flex-end !important; padding:0 !important; }
+  .modal { border-radius:18px 18px 0 0 !important; max-width:100% !important; margin:0 !important; }
+  /* Ocultar columnas extras */
+  .hide-mobile { display:none !important; }
+}
+</style>
+
 <script>
 function abrirSidebar() {
-  document.querySelector('.sidebar').classList.add('open');
+  document.getElementById('mainSidebar').classList.add('open');
   document.getElementById('sidebarOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 function cerrarSidebar() {
-  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('mainSidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
+// Cerrar sidebar al hacer click en un enlace (en móvil)
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('#mainSidebar .nav-item').forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 768) cerrarSidebar();
+    });
+  });
+});
 </script>
