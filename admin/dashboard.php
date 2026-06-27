@@ -56,7 +56,7 @@ $nav_active='dashboard';$user_rol='superadmin';$user_nombre='Administrador';$use
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard — ContaDocs</title>
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.css?v=2">
 <link rel="icon" type="image/png" href="/assets/img/logo_icono.svg">
 <style>
 .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}

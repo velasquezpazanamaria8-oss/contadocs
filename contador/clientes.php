@@ -91,7 +91,7 @@ $user_nombre=$estudio['nombre']??''; $user_plan=$plan_id;
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mis clientes — ContaDocs</title>
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.css?v=2">
 <style>
 .empresa-card{background:#fff;border:1.5px solid var(--g200);border-radius:16px;padding:20px;transition:all .2s;margin-bottom:12px}
 .empresa-card:hover{border-color:var(--azul);box-shadow:0 8px 24px rgba(79,110,247,.1);transform:translateY(-1px)}

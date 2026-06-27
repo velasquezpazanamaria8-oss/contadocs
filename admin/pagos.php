@@ -111,7 +111,7 @@ $nav_active = 'pagos'; $user_rol = 'superadmin'; $user_nombre = 'Administrador';
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pagos — ContaDocs Admin</title>
-<link rel="stylesheet" href="/assets/css/app.css">
+<link rel="stylesheet" href="/assets/css/app.css?v=2">
 <link rel="icon" type="image/png" href="/assets/img/logo_icono.svg">
 <style>
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:10000;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}

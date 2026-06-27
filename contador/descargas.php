@@ -28,7 +28,7 @@ $user_plan   = $estudio['plan'] ?? 'basico';
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Descargas — ContaDocs</title>
-  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/app.css?v=2">
 </head>
 <body>
 <div class="app-layout">

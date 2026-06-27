@@ -1,11 +1,24 @@
 Options -Indexes
 DirectoryIndex index.php
-<FilesMatch "\.(env|sql|log|md|json)$">
-  Order allow,deny
-  Deny from all
+
+# Proteger archivos sensibles
+<FilesMatch "\.(env|sql|log|json|lock)$">
+    Order allow,deny
+    Deny from all
 </FilesMatch>
+
+# Desactivar TODO caché para CSS y JS
 <IfModule mod_headers.c>
-  <FilesMatch "\.(css|js)$">
-    Header set Cache-Control "no-cache, must-revalidate"
-  </FilesMatch>
+    <FilesMatch "\.(css|js)$">
+        FileETag None
+        Header unset ETag
+        Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+        Header set Pragma "no-cache"
+        Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
+    </FilesMatch>
+</IfModule>
+
+# Comprimir respuestas
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript text/plain
 </IfModule>
