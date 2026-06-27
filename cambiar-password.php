@@ -20,6 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Cambiar contraseña — ContaDocs</title><link rel="stylesheet" href="/assets/css/app.css?v=2"></head><body>
+  <link rel="icon" type="image/png" href="/assets/img/logo_icono.svg">
 <div class="login-page">
   <div class="login-box">
     <div class="login-logo">

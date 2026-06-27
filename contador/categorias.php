@@ -76,6 +76,7 @@ $user_plan   = $estudio['plan'] ?? 'basico';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Categorías — ContaDocs</title>
   <link rel="stylesheet" href="/assets/css/app.css?v=2">
+  <link rel="icon" type="image/png" href="/assets/img/logo_icono.svg">
 </head>
 <body>
 <div class="app-layout">
