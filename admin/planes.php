@@ -63,6 +63,7 @@ $nav_active='planes'; $user_rol='superadmin'; $user_nombre='Administrador';
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Planes — ContaDocs Admin</title>
 <link rel="stylesheet" href="/assets/css/app.css">
+<link rel="icon" type="image/png" href="/assets/img/logo_icono.svg">
 <style>
 .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:100;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.open{opacity:1;pointer-events:all}

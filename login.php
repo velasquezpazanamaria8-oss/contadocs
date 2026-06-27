@@ -30,6 +30,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ingresar — ContaDocs</title>
+<link rel="icon" type="image/png" href="/assets/img/logo_icono.svg">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{

@@ -184,7 +184,7 @@ $user_nombre=$estudio['nombre']??''; $user_plan=$estudio['plan_id']??$estudio['p
                 <td>
                   <div style="display:flex;gap:4px">
                     <!-- Descargar (para verificar) -->
-                    <a href="/contador/descargar.php?id=<?= e($doc['id']) ?>"
+                    <a href="/contador/descargar.php?id=<?= e($doc['id']) ?>"  target="_blank"
                        class="btn btn-secondary btn-sm" title="Descargar para verificar"
                        style="padding:5px 8px">
                       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">

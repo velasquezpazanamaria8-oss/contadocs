@@ -15,6 +15,7 @@ if (!empty($_SESSION['uid'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="ContaDocs — Portal de documentos contables para estudios en Perú. Sube fichas RUC, planillas y PDTs. Tus clientes los descargan en segundos.">
 <title>ContaDocs — Portal de documentos para estudios contables en Perú</title>
+<link rel="icon" type="image/png" href="/assets/img/logo_icono.svg">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{

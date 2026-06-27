@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ruc   = trim($_POST['ruc'] ?? '');
             $email = strtolower(trim($_POST['email_acceso'] ?? ''));
             if (!$razon || !$ruc || !$email) { $error = 'Completa todos los campos.'; }
-            elseif (Database::fetch("SELECT id FROM usuarios WHERE email=?", [$email])) { $error = 'Email ya registrado.'; }
+            elseif (Database::fetch("SELECT id FROM usuarios WHERE email=?", [$email]) || Database::fetch("SELECT id FROM empresas_cliente WHERE ruc=? and estudio_id=?", [$ruc,$user['estudio_id']])) { $error = 'Email o Ruc ya registrado.'; }
+          
             else {
                 $pass = Auth::generarPasswordTemporal();
                 $hash = Auth::hashPassword($pass);
