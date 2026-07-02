@@ -154,7 +154,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
 
 /* PLANES */
 .planes{background:#fff}
-.planes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:0 auto}
+.planes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:1180px;margin:0 auto}
 .plan-card{border:1.5px solid var(--g200);border-radius:16px;padding:28px;transition:all .2s;position:relative}
 .plan-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.08)}
 .plan-card.popular{border-color:var(--azul);box-shadow:0 0 0 3px rgba(79,110,247,.12)}
@@ -214,6 +214,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
 .wa-float:hover .wa-tooltip{opacity:1}
 
 /* RESPONSIVE */
+@media(max-width:1080px){
+  .planes-grid{grid-template-columns:repeat(2,1fr);max-width:640px}
+}
 @media(max-width:900px){
   .feat-grid,.roles-grid,.planes-grid{grid-template-columns:1fr 1fr}
   .how-steps{grid-template-columns:1fr 1fr}
