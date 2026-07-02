@@ -14,55 +14,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $periodo   = trim($_POST['periodo'] ?? '');
     $nombre    = trim($_POST['nombre'] ?? '');
 
+    // Normalizar $_FILES['archivo'] a una lista de archivos individuales
+    // (soporta tanto envío simple como múltiple con name="archivo[]")
+    $archivos = [];
+    if (isset($_FILES['archivo']) && is_array($_FILES['archivo']['name'])) {
+        foreach ($_FILES['archivo']['name'] as $i => $nom) {
+            if (($_FILES['archivo']['error'][$i] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) continue;
+            $archivos[] = [
+                'name'     => $nom,
+                'tmp_name' => $_FILES['archivo']['tmp_name'][$i],
+                'error'    => $_FILES['archivo']['error'][$i],
+                'size'     => $_FILES['archivo']['size'][$i],
+            ];
+        }
+    } elseif (isset($_FILES['archivo']) && $_FILES['archivo']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $archivos[] = $_FILES['archivo'];
+    }
+
     if (!$emp_id || !$cat_id || !$periodo) {
         $error = 'Selecciona empresa, categoría y período.';
-    } elseif (!isset($_FILES['archivo']) || $_FILES['archivo']['error'] === UPLOAD_ERR_NO_FILE) {
-        $error = 'Debes seleccionar un archivo.';
-    } elseif ($_FILES['archivo']['error'] !== UPLOAD_ERR_OK) {
-        $codigos = [1=>'Archivo muy grande (límite del servidor)',2=>'Archivo muy grande',3=>'Subida incompleta',4=>'No se seleccionó archivo',6=>'Sin carpeta temporal',7=>'Error al escribir en disco'];
-        $error = 'Error al subir: ' . ($codigos[$_FILES['archivo']['error']] ?? 'Error '.$_FILES['archivo']['error']);
+    } elseif (empty($archivos)) {
+        $error = 'Debes seleccionar al menos un archivo.';
     } else {
-        $archivo = $_FILES['archivo'];
-        $ext     = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-        $permitidos = ['pdf','jpg','jpeg','png'];
-
-        if (!in_array($ext, $permitidos)) {
-            $error = 'Solo se permiten archivos PDF, JPG o PNG.';
-        } elseif ($archivo['size'] > 15 * 1024 * 1024) {
-            $error = 'El archivo no puede superar 15 MB.';
+        // Verificar que empresa pertenece al estudio (una sola vez)
+        $empresa = Database::fetch("SELECT id FROM empresas_cliente WHERE id=? AND estudio_id=?", [$emp_id, $user['estudio_id']]);
+        if (!$empresa) {
+            $error = 'Empresa no encontrada.';
         } else {
-            // Verificar que empresa pertenece al estudio
-            $empresa = Database::fetch("SELECT id FROM empresas_cliente WHERE id=? AND estudio_id=?", [$emp_id, $user['estudio_id']]);
-            if (!$empresa) {
-                $error = 'Empresa no encontrada.';
+            // Usar DOCUMENT_ROOT para ruta absoluta correcta en Hostinger
+            $doc_root    = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
+            $carpeta_rel = '/uploads/' . $user['estudio_id'] . '/' . $emp_id . '/' . $periodo;
+            $carpeta_abs = $doc_root . $carpeta_rel;
+
+            if (!is_dir($carpeta_abs) && !mkdir($carpeta_abs, 0755, true)) {
+                $error = 'No se pudo crear la carpeta de destino. Verifica permisos de uploads/.';
             } else {
-                // Usar DOCUMENT_ROOT para ruta absoluta correcta en Hostinger
-                $doc_root   = rtrim($_SERVER['DOCUMENT_ROOT'], '/');
-                $carpeta_rel = '/uploads/' . $user['estudio_id'] . '/' . $emp_id . '/' . $periodo;
-                $carpeta_abs = $doc_root . $carpeta_rel;
+                $permitidos = ['pdf','jpg','jpeg','png'];
+                $codigos = [1=>'archivo muy grande (límite del servidor)',2=>'archivo muy grande',3=>'subida incompleta',6=>'sin carpeta temporal',7=>'error al escribir en disco'];
+                $subidos = 0;
+                $fallidos = [];
+                // Si suben un solo archivo se respeta el nombre personalizado; con varios se usa el nombre de cada archivo
+                $usar_nombre_custom = ($nombre !== '' && count($archivos) === 1);
 
-                if (!is_dir($carpeta_abs)) {
-                    if (!mkdir($carpeta_abs, 0755, true)) {
-                        $error = 'No se pudo crear la carpeta de destino. Verifica permisos de uploads/.';
+                foreach ($archivos as $archivo) {
+                    if ($archivo['error'] !== UPLOAD_ERR_OK) {
+                        $fallidos[] = $archivo['name'] . ' (' . ($codigos[$archivo['error']] ?? 'error '.$archivo['error']) . ')';
+                        continue;
                     }
-                }
+                    $ext = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+                    if (!in_array($ext, $permitidos)) {
+                        $fallidos[] = $archivo['name'] . ' (formato no permitido)';
+                        continue;
+                    }
+                    if ($archivo['size'] > 15 * 1024 * 1024) {
+                        $fallidos[] = $archivo['name'] . ' (supera 15 MB)';
+                        continue;
+                    }
 
-                if (!$error) {
-                    $nombre_archivo = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $archivo['name']);
+                    $nombre_archivo = time() . '_' . mt_rand(1000, 9999) . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $archivo['name']);
                     $ruta_abs       = $carpeta_abs . '/' . $nombre_archivo;
                     $storage_path   = $user['estudio_id'] . '/' . $emp_id . '/' . $periodo . '/' . $nombre_archivo;
 
                     if (move_uploaded_file($archivo['tmp_name'], $ruta_abs)) {
-                        $doc_id = uuid();
+                        $doc_nombre = $usar_nombre_custom ? $nombre : $archivo['name'];
                         Database::query(
                             "INSERT INTO documentos (id,empresa_id,categoria_id,nombre,storage_path,periodo,tamanio,subido_por) VALUES (?,?,?,?,?,?,?,?)",
-                            [$doc_id, $emp_id, $cat_id, $nombre ?: $archivo['name'], $storage_path, $periodo, $archivo['size'], $user['id']]
+                            [uuid(), $emp_id, $cat_id, $doc_nombre, $storage_path, $periodo, $archivo['size'], $user['id']]
                         );
-                        $mensaje = '✅ Documento "' . ($nombre ?: $archivo['name']) . '" subido correctamente para el período ' . $periodo . '.';
-                        $empresa_id_pre = $emp_id; // Mantener empresa seleccionada
+                        $subidos++;
                     } else {
-                        $error = 'No se pudo guardar el archivo. Verifica que la carpeta uploads/ tenga permisos 755.';
+                        $fallidos[] = $archivo['name'] . ' (no se pudo guardar)';
                     }
+                }
+
+                if ($subidos > 0) {
+                    $mensaje = '✅ ' . $subidos . ' documento' . ($subidos > 1 ? 's' : '') . ' subido' . ($subidos > 1 ? 's' : '') . ' correctamente para el período ' . $periodo . '.';
+                    $empresa_id_pre = $emp_id; // Mantener empresa seleccionada
+                }
+                if (!empty($fallidos)) {
+                    $error = 'No se subieron: ' . implode(', ', $fallidos) . '.';
                 }
             }
         }
@@ -204,38 +234,29 @@ $user_plan   = $estudio['plan_id'] ?? $estudio['plan'] ?? '';
             <div class="form-group">
               <label class="form-label">Nombre del documento <span style="font-weight:400;color:var(--gris-400)">(opcional)</span></label>
               <input type="text" name="nombre" class="form-input" placeholder="Ej: Ficha RUC actualizada junio 2025">
-              <div class="form-hint">Si no pones nombre, se usa el nombre del archivo</div>
+              <div class="form-hint">Solo aplica si subes un archivo. Con varios se usa el nombre de cada archivo.</div>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Archivo *</label>
+              <label class="form-label">Archivos *</label>
               <label class="dropzone" id="dropzone" for="archivoInput">
                 <div class="dropzone-icon">📁</div>
-                <div class="dropzone-title">Arrastra el archivo aquí</div>
-                <div class="dropzone-sub">PDF, JPG o PNG · máx. 15 MB</div>
+                <div class="dropzone-title">Arrastra los archivos aquí</div>
+                <div class="dropzone-sub">PDF, JPG o PNG · máx. 15 MB c/u · puedes seleccionar varios</div>
                 <div style="margin-top:12px">
-                  <span class="btn btn-secondary btn-sm">Seleccionar archivo</span>
+                  <span class="btn btn-secondary btn-sm">Seleccionar archivos</span>
                 </div>
               </label>
-              <input type="file" id="archivoInput" name="archivo" accept=".pdf,.jpg,.jpeg,.png" style="display:none" required>
+              <input type="file" id="archivoInput" name="archivo[]" accept=".pdf,.jpg,.jpeg,.png" style="display:none" multiple required>
 
-              <div id="filePreview" class="file-list" style="display:none">
-                <div class="file-item">
-                  <span style="font-size:22px">📄</span>
-                  <div style="flex:1;min-width:0">
-                    <div class="file-item-name" id="fileName"></div>
-                    <div class="file-item-size" id="fileSize"></div>
-                  </div>
-                  <button type="button" onclick="quitarArchivo()" style="background:none;border:none;cursor:pointer;color:var(--gris-400);font-size:18px">×</button>
-                </div>
-              </div>
+              <div id="filePreview" class="file-list" style="display:none"></div>
             </div>
 
             <button type="submit" class="btn btn-primary w-full" id="btnSubir" <?= (empty($categorias)||empty($empresas))?'disabled':'' ?>>
               <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="16" height="16">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
               </svg>
-              <span id="btnTexto">Subir documento</span>
+              <span id="btnTexto">Subir documentos</span>
             </button>
           </form>
         </div>
@@ -274,7 +295,7 @@ $user_plan   = $estudio['plan_id'] ?? $estudio['plan'] ?? '';
               <?php foreach ([
                 'Los PDFs son el formato preferido para documentos contables',
                 'El nombre del período debe coincidir con el mes declarado (ej: 2025-06)',
-                'Puedes subir múltiples documentos de una misma empresa uno por uno',
+                'Puedes seleccionar y subir varios documentos a la vez para la misma empresa',
                 'El cliente recibe acceso inmediato tras la subida',
               ] as $tip): ?>
               <div style="display:flex;gap:8px;align-items:flex-start">
@@ -297,34 +318,60 @@ const preview  = document.getElementById('filePreview');
 const btnSubir = document.getElementById('btnSubir');
 const btnTexto = document.getElementById('btnTexto');
 
-input.addEventListener('change', mostrarArchivo);
+input.addEventListener('change', mostrarArchivos);
 
 dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
 dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
 dropzone.addEventListener('drop', e => {
   e.preventDefault();
   dropzone.classList.remove('dragover');
-  if (e.dataTransfer.files[0]) {
+  if (e.dataTransfer.files.length) {
     const dt = new DataTransfer();
-    dt.items.add(e.dataTransfer.files[0]);
+    for (const f of e.dataTransfer.files) dt.items.add(f);
     input.files = dt.files;
-    mostrarArchivo();
+    mostrarArchivos();
   }
 });
 
-function mostrarArchivo() {
-  const f = input.files[0];
-  if (!f) return;
-  document.getElementById('fileName').textContent = f.name;
-  document.getElementById('fileSize').textContent = formatBytes(f.size);
-  preview.style.display = 'flex';
+function mostrarArchivos() {
+  const files = input.files;
+  if (!files.length) { quitarTodos(); return; }
+  preview.innerHTML = '';
+  Array.from(files).forEach((f, i) => {
+    const row = document.createElement('div');
+    row.className = 'file-item';
+    row.innerHTML =
+      '<span style="font-size:22px">📄</span>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="file-item-name">' + escapeHtml(f.name) + '</div>' +
+        '<div class="file-item-size">' + formatBytes(f.size) + '</div>' +
+      '</div>' +
+      '<button type="button" data-idx="' + i + '" class="btn-quitar" style="background:none;border:none;cursor:pointer;color:var(--gris-400);font-size:18px">×</button>';
+    preview.appendChild(row);
+  });
+  preview.querySelectorAll('.btn-quitar').forEach(b =>
+    b.addEventListener('click', () => quitarArchivo(parseInt(b.dataset.idx, 10)))
+  );
+  preview.style.display = 'block';
   dropzone.style.display = 'none';
 }
 
-function quitarArchivo() {
+function quitarArchivo(idx) {
+  const dt = new DataTransfer();
+  Array.from(input.files).forEach((f, i) => { if (i !== idx) dt.items.add(f); });
+  input.files = dt.files;
+  mostrarArchivos();
+}
+
+function quitarTodos() {
   input.value = '';
+  preview.innerHTML = '';
   preview.style.display = 'none';
   dropzone.style.display = 'block';
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function formatBytes(b) {
