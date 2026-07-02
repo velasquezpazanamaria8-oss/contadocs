@@ -116,7 +116,7 @@ function cdInitMobile(){
     if(!sb.classList.contains('open')) sb.style.left='-260px';
     sb.style.position='fixed';
     sb.style.top='0';
-    sb.style.bottom='0';
+    sb.style.bottom='';
     sb.style.width='250px';
     sb.style.zIndex='9999';
   } else {

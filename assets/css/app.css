@@ -224,13 +224,21 @@ tbody tr:hover td{background:var(--g50)}
   /* 3. Sidebar: oculto a la izquierda */
   .sidebar{
     position:fixed!important;
-    top:0!important;left:-260px!important;bottom:0!important;
+    top:0!important;left:-260px!important;
     width:250px!important;
     z-index:9999!important;
     transition:left .28s cubic-bezier(.4,0,.2,1)!important;
+    display:flex!important;
+    flex-direction:column!important;
+    height:100vh!important;      /* fallback navegadores antiguos */
+    height:100dvh!important;     /* descuenta barras del navegador móvil */
     overflow-y:auto!important;
-    min-height:100vh!important;
+    -webkit-overflow-scrolling:touch;
   }
+  /* Nav puede encogerse y hacer scroll interno; el footer queda siempre visible */
+  .sidebar .sidebar-nav{flex:1 1 auto!important;overflow-y:auto!important;min-height:0!important}
+  .sidebar .sidebar-logo,
+  .sidebar .sidebar-footer{flex-shrink:0!important}
   .sidebar.open{
     left:0!important;
     box-shadow:8px 0 48px rgba(0,0,0,.5)!important;
