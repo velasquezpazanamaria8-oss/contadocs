@@ -514,9 +514,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
     <div class="sec-sub">Pago mensual por Yape, Plin o transferencia. Sin pasarela, sin comisiones.</div>
     <div class="planes-grid">
       <div class="plan-card">
+        <div class="plan-name">Gratis</div>
+        <div class="plan-price">S/ 0 <span>/mes</span></div>
+        <div class="plan-limit">Hasta 1 empresa cliente</div>
+        <div class="plan-feats">
+          <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Portal de documentos</div>
+          <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Categorías ilimitadas</div>
+          <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Descarga para clientes</div>
+          <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Soporte por WhatsApp</div>
+        </div>
+        <a href="https://wa.me/51972309300?text=Quiero+el+plan+Básico+de+ContaDocs" class="btn-plan btn-plan-out" target="_blank">Solicitar por WhatsApp</a>
+      </div>
+      <div class="plan-card">
         <div class="plan-name">Básico</div>
-        <div class="plan-price">S/ 49.90 <span>/mes</span></div>
-        <div class="plan-limit">Hasta 10 empresas cliente</div>
+        <div class="plan-price">S/ 29.90 <span>/mes</span></div>
+        <div class="plan-limit">Hasta 5 empresas cliente</div>
         <div class="plan-feats">
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Portal de documentos</div>
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Categorías ilimitadas</div>
@@ -528,8 +540,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
       <div class="plan-card popular">
         <div class="plan-pop-badge">⭐ Más popular</div>
         <div class="plan-name">Profesional</div>
-        <div class="plan-price">S/ 99.90 <span>/mes</span></div>
-        <div class="plan-limit">Hasta 25 empresas cliente</div>
+        <div class="plan-price">S/ 49.90 <span>/mes</span></div>
+        <div class="plan-limit">Hasta 20 empresas cliente</div>
         <div class="plan-feats">
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Todo lo del Básico</div>
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Historial de descargas</div>
@@ -540,7 +552,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;c
       </div>
       <div class="plan-card">
         <div class="plan-name">Ilimitado</div>
-        <div class="plan-price">S/ 200 <span>/mes</span></div>
+        <div class="plan-price">S/ 99.90 <span>/mes</span></div>
         <div class="plan-limit">Empresas ilimitadas</div>
         <div class="plan-feats">
           <div class="plan-feat"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Todo lo anterior</div>
