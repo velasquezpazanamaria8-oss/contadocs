@@ -36,6 +36,12 @@ $categorias = Database::fetchAll(
     [$user['empresa_id']]
 );
 
+// Agrupar por período (para el cliente la empresa siempre es la suya)
+$grupos = [];
+foreach ($documentos as $doc) {
+    $grupos[$doc['periodo']][] = $doc;
+}
+
 $nav_active  = 'documentos';
 $user_rol    = 'cliente';
 $user_nombre = $empresa['razon_social'];
@@ -48,6 +54,16 @@ $user_nombre = $empresa['razon_social'];
   <title>Mis documentos — ContaDocs</title>
   <link rel="stylesheet" href="/assets/css/app.css?v=2">
   <link rel="icon" type="image/png" href="/assets/img/logo_icono.svg">
+  <style>
+  .periodo-group{margin-bottom:18px}
+  .periodo-header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--gris-50);border:1px solid var(--gris-100);border-radius:12px;cursor:pointer;user-select:none;margin-bottom:12px}
+  .periodo-header:hover{background:var(--gris-100)}
+  .periodo-title{font-weight:700;color:var(--gris-900);font-size:14px}
+  .periodo-count{font-size:12px;color:var(--gris-400)}
+  .group-arrow{transition:transform .15s;color:var(--gris-500);flex-shrink:0}
+  .group-arrow.open{transform:rotate(90deg)}
+  .periodo-body.collapsed{display:none}
+  </style>
 </head>
 <body>
 <div class="app-layout">
@@ -97,46 +113,69 @@ $user_nombre = $empresa['razon_social'];
         <p style="font-size:13px;color:var(--gris-400);margin-top:6px">Tu contador aún no ha subido documentos para este período.</p>
       </div>
       <?php else: ?>
-      <div class="doc-grid">
-        <?php foreach ($documentos as $doc): ?>
-        <div class="doc-card">
-          <div class="doc-icon">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" width="22" height="22">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-            </svg>
-          </div>
-          <div class="doc-info">
-            <div class="doc-name">
-              <?= e($doc['nombre']) ?>
-              <?php if (!$doc['descargado']): ?>
-              <span class="badge badge-green" style="font-size:10px">Nuevo</span>
-              <?php endif; ?>
-            </div>
-            <div class="doc-meta">
-              <?php if ($doc['cat_nombre']): ?>
-              <span style="background:<?= e($doc['cat_color'] ?? '#f3f4f6') ?>;color:<?= e($doc['cat_color_texto'] ?? '#374151') ?>;padding:2px 7px;border-radius:4px;font-size:11px">
-                <?= e($doc['cat_nombre']) ?>
-              </span>
-              <?php endif; ?>
-              <span><?= e($doc['periodo']) ?></span>
-              <?php if ($doc['tamanio']): ?>
-              <span><?= formatBytes((int)$doc['tamanio']) ?></span>
-              <?php endif; ?>
-              <span>Subido el <?= fechaEs($doc['created_at']) ?></span>
-            </div>
-          </div>
-          <a href="/cliente/descargar.php?id=<?= e($doc['id']) ?>" class="btn btn-primary btn-sm" target="_blank">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            Descargar
-          </a>
+      <?php $gi = 0; foreach ($grupos as $periodo_g => $docs_g): $gi++;
+        $nuevos = count(array_filter($docs_g, fn($d) => !$d['descargado'])); ?>
+      <div class="periodo-group">
+        <div class="periodo-header" onclick="togglePeriodo(<?= $gi ?>)">
+          <svg class="group-arrow open" id="arrow-<?= $gi ?>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <span class="periodo-title"><?= e($periodo_g) ?></span>
+          <span class="periodo-count"><?= count($docs_g) ?> <?= count($docs_g) == 1 ? 'documento' : 'documentos' ?></span>
+          <?php if ($nuevos): ?>
+          <span class="badge badge-green" style="font-size:10px;margin-left:auto"><?= $nuevos ?> <?= $nuevos == 1 ? 'nuevo' : 'nuevos' ?></span>
+          <?php endif; ?>
         </div>
-        <?php endforeach; ?>
+        <div class="doc-grid periodo-body" id="body-<?= $gi ?>">
+          <?php foreach ($docs_g as $doc): ?>
+          <div class="doc-card">
+            <div class="doc-icon">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <div class="doc-info">
+              <div class="doc-name">
+                <?= e($doc['nombre']) ?>
+                <?php if (!$doc['descargado']): ?>
+                <span class="badge badge-green" style="font-size:10px">Nuevo</span>
+                <?php endif; ?>
+              </div>
+              <div class="doc-meta">
+                <?php if ($doc['cat_nombre']): ?>
+                <span style="background:<?= e($doc['cat_color'] ?? '#f3f4f6') ?>;color:<?= e($doc['cat_color_texto'] ?? '#374151') ?>;padding:2px 7px;border-radius:4px;font-size:11px">
+                  <?= e($doc['cat_nombre']) ?>
+                </span>
+                <?php endif; ?>
+                <span><?= e($doc['periodo']) ?></span>
+                <?php if ($doc['tamanio']): ?>
+                <span><?= formatBytes((int)$doc['tamanio']) ?></span>
+                <?php endif; ?>
+                <span>Subido el <?= fechaEs($doc['created_at']) ?></span>
+              </div>
+            </div>
+            <a href="/cliente/descargar.php?id=<?= e($doc['id']) ?>" class="btn btn-primary btn-sm" target="_blank">
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              Descargar
+            </a>
+          </div>
+          <?php endforeach; ?>
+        </div>
       </div>
+      <?php endforeach; ?>
       <?php endif; ?>
     </div>
   </div>
 </div>
+<script>
+function togglePeriodo(gi) {
+  var body  = document.getElementById('body-' + gi);
+  var arrow = document.getElementById('arrow-' + gi);
+  if (!body) return;
+  var abierto = !body.classList.contains('collapsed');
+  body.classList.toggle('collapsed', abierto);
+  if (arrow) arrow.classList.toggle('open', !abierto);
+}
+</script>
 </body>
 </html>
