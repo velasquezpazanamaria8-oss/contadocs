@@ -324,7 +324,7 @@ body{display:flex;min-height:100vh;background:#0f172a}
 
   <div class="right-footer">
     ¿Problemas para ingresar? Contacta a tu contador o
-    <a href="https://wa.me/51999999999" target="_blank" style="color:#0ea472;font-weight:600;text-decoration:none">escríbenos por WhatsApp</a>
+    <a href="https://wa.me/51972309300" target="_blank" style="color:#0ea472;font-weight:600;text-decoration:none">escríbenos por WhatsApp</a>
   </div>
 </div>
 
