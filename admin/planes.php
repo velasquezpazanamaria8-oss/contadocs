@@ -9,12 +9,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'crear') {
         $nombre   = trim($_POST['nombre'] ?? '');
-  /*       $precio   = (float)($_POST['precio'] ?? 0); */
-        $precio   = $_POST['precio'] ;
+        $precio   = (float)($_POST['precio'] ?? 0);
         $limite   = (int)($_POST['limite_empresas'] ?? 10);
         $dias     = (int)($_POST['dias_acceso'] ?? 30);
         $desc     = trim($_POST['descripcion'] ?? '');
-        if (!$nombre || $precio <= 0) { $error = 'Nombre y precio son obligatorios.'; }
+        if (!$nombre || $precio < 0) { $error = 'El nombre es obligatorio y el precio no puede ser negativo.'; }
         else {
             $id = uuid();
             Database::query("INSERT INTO planes (id,nombre,precio,limite_empresas,dias_acceso,descripcion,activo) VALUES (?,?,?,?,?,?,1)",
@@ -26,13 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'editar') {
         $pid    = $_POST['plan_id'] ?? '';
         $nombre = trim($_POST['nombre'] ?? '');
-      /*   $precio = (float)($_POST['precio'] ?? 0); */
-      $precio   = $_POST['precio'] ;
+        $precio = (float)($_POST['precio'] ?? 0);
         $limite = (int)($_POST['limite_empresas'] ?? 10);
         $dias   = (int)($_POST['dias_acceso'] ?? 30);
         $desc   = trim($_POST['descripcion'] ?? '');
         $activo = (int)($_POST['activo'] ?? 1);
-        if (!$nombre || $precio <= 0) { $error = 'Nombre y precio son obligatorios.'; }
+        if (!$nombre || $precio < 0) { $error = 'El nombre es obligatorio y el precio no puede ser negativo.'; }
         else {
             Database::query("UPDATE planes SET nombre=?,precio=?,limite_empresas=?,dias_acceso=?,descripcion=?,activo=? WHERE id=?",
                 [$nombre,$precio,$limite,$dias,$desc,$activo,$pid]);
@@ -180,7 +178,7 @@ $nav_active='planes'; $user_rol='superadmin'; $user_nombre='Administrador';
       <input type="hidden" name="action" value="crear">
       <div class="form-group"><label class="form-label">Nombre del plan *</label><input type="text" name="nombre" class="form-input" required placeholder="Ej: Básico, Profesional, VIP..."></div>
       <div class="grid-2">
-        <div class="form-group"><label class="form-label">Precio mensual (S/) *</label><input type="number" name="precio" class="form-input" required step="0.01" min="1" placeholder="49.90"></div>
+        <div class="form-group"><label class="form-label">Precio mensual (S/) *</label><input type="number" name="precio" class="form-input" required step="0.01" min="0" placeholder="49.90"></div>
         <div class="form-group"><label class="form-label">Días de acceso</label><input type="number" name="dias_acceso" class="form-input" value="30" min="1"></div>
       </div>
       <div class="form-group">
@@ -207,7 +205,7 @@ $nav_active='planes'; $user_rol='superadmin'; $user_nombre='Administrador';
       <input type="hidden" name="plan_id" id="editPlanId">
       <div class="form-group"><label class="form-label">Nombre *</label><input type="text" name="nombre" id="editNombrePlan" class="form-input" required></div>
       <div class="grid-2">
-        <div class="form-group"><label class="form-label">Precio mensual (S/) *</label><input type="number" name="precio" id="editPrecioPlan" class="form-input" required step="0.01" min="1"></div>
+        <div class="form-group"><label class="form-label">Precio mensual (S/) *</label><input type="number" name="precio" id="editPrecioPlan" class="form-input" required step="0.01" min="0"></div>
         <div class="form-group"><label class="form-label">Días de acceso</label><input type="number" name="dias_acceso" id="editDiasPlan" class="form-input" min="1"></div>
       </div>
       <div class="form-group">
