@@ -41,6 +41,31 @@ $documentos = Database::fetchAll(
      WHERE $where ORDER BY d.created_at DESC", $params
 );
 
+// Agrupar documentos por empresa + período (acordeón). $documentos ya viene ordenado por created_at DESC.
+$grupos = [];
+foreach ($documentos as $doc) {
+    $clave = $doc['empresa_id'] . '|' . $doc['periodo'];
+    if (!isset($grupos[$clave])) {
+        $grupos[$clave] = [
+            'razon_social'    => $doc['razon_social'],
+            'ruc'             => $doc['ruc'],
+            'periodo'         => $doc['periodo'],
+            'docs'            => [],
+            'total_tamanio'   => 0,
+            'total_descargas' => 0,
+            'cats'            => [],
+            'ultimo'          => $doc['created_at'],
+        ];
+    }
+    $grupos[$clave]['docs'][]           = $doc;
+    $grupos[$clave]['total_tamanio']   += (int)$doc['tamanio'];
+    $grupos[$clave]['total_descargas'] += (int)$doc['total_descargas'];
+    if ($doc['cat_nombre'] && !isset($grupos[$clave]['cats'][$doc['cat_nombre']])) {
+        $grupos[$clave]['cats'][$doc['cat_nombre']] = ['nombre'=>$doc['cat_nombre'],'color'=>$doc['color'],'color_texto'=>$doc['color_texto']];
+    }
+    if ($doc['created_at'] > $grupos[$clave]['ultimo']) $grupos[$clave]['ultimo'] = $doc['created_at'];
+}
+
 $empresas = Database::fetchAll("SELECT id, razon_social FROM empresas_cliente WHERE estudio_id=? ORDER BY razon_social", [$user['estudio_id']]);
 $periodos = Database::fetchAll("SELECT DISTINCT d.periodo FROM documentos d JOIN empresas_cliente ec ON d.empresa_id=ec.id WHERE ec.estudio_id=? ORDER BY d.periodo DESC", [$user['estudio_id']]);
 
@@ -63,6 +88,12 @@ $user_nombre=$estudio['nombre']??''; $user_plan=$estudio['plan_id']??$estudio['p
 .modal-overlay.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:18px;box-shadow:0 24px 64px rgba(0,0,0,.2);width:100%;max-width:420px;padding:28px;transform:scale(.97);transition:transform .2s}
 .modal-overlay.open .modal{transform:scale(1)}
+.group-row{cursor:pointer;background:var(--gris-50)}
+.group-row:hover{background:var(--gris-100)}
+.group-arrow{display:inline-block;transition:transform .15s;flex-shrink:0;color:var(--gris-500)}
+.group-arrow.open{transform:rotate(90deg)}
+.child-row>td:first-child{padding-left:40px}
+.child-row{background:#fff}
 </style>
 </head>
 <body>
@@ -154,24 +185,28 @@ $user_nombre=$estudio['nombre']??''; $user_plan=$estudio['plan_id']??$estudio['p
               </tr>
             </thead>
             <tbody>
-              <?php foreach ($documentos as $doc): ?>
-              <tr>
+              <?php
+              // Renderiza las celdas de un documento individual (fila hija o fila única)
+              $render_doc_cells = function($doc, $mostrar_empresa) {
+                ob_start(); ?>
                 <td>
                   <div style="display:flex;align-items:center;gap:8px">
                     <div style="width:32px;height:32px;background:#fee2e2;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">📄</div>
-                    <div style="font-weight:600;color:var(--gris-900);font-size:13px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= e($doc['nombre']) ?></div>
+                    <div style="font-weight:600;color:var(--gris-900);font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><?= e($doc['nombre']) ?></div>
                   </div>
                 </td>
                 <td>
+                  <?php if ($mostrar_empresa): ?>
                   <div style="font-weight:500;color:var(--gris-900);font-size:13px"><?= e($doc['razon_social']) ?></div>
                   <div style="font-size:11px;color:var(--gris-400)"><?= e($doc['ruc']) ?></div>
+                  <?php else: ?><span class="text-muted">—</span><?php endif; ?>
                 </td>
                 <td>
                   <?php if ($doc['cat_nombre']): ?>
                   <span style="background:<?= e($doc['color']??'#f1f5f9') ?>;color:<?= e($doc['color_texto']??'#475569') ?>;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:600"><?= e($doc['cat_nombre']) ?></span>
                   <?php else: ?>—<?php endif; ?>
                 </td>
-                <td><span class="badge badge-blue badge-none"><?= e($doc['periodo']) ?></span></td>
+                <td><?php if ($mostrar_empresa): ?><span class="badge badge-blue badge-none"><?= e($doc['periodo']) ?></span><?php else: ?><span class="text-muted">—</span><?php endif; ?></td>
                 <td class="text-muted"><?= $doc['tamanio']?formatBytes((int)$doc['tamanio']):'—' ?></td>
                 <td class="text-muted" style="font-size:12px"><?= tiempoRelativo($doc['created_at']) ?></td>
                 <td>
@@ -184,15 +219,12 @@ $user_nombre=$estudio['nombre']??''; $user_plan=$estudio['plan_id']??$estudio['p
                 </td>
                 <td>
                   <div style="display:flex;gap:4px">
-                    <!-- Descargar (para verificar) -->
-                    <a href="/contador/descargar.php?id=<?= e($doc['id']) ?>"  target="_blank"
-                       class="btn btn-secondary btn-sm" title="Descargar para verificar"
-                       style="padding:5px 8px">
+                    <a href="/contador/descargar.php?id=<?= e($doc['id']) ?>" target="_blank"
+                       class="btn btn-secondary btn-sm" title="Descargar para verificar" style="padding:5px 8px">
                       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                       </svg>
                     </a>
-                    <!-- Eliminar -->
                     <button class="btn btn-ghost btn-sm" style="color:var(--rojo);padding:5px 8px"
                       onclick='confirmarEliminar("<?= e($doc['id']) ?>","<?= e(addslashes($doc['nombre'])) ?>")'>
                       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="14" height="14">
@@ -201,7 +233,48 @@ $user_nombre=$estudio['nombre']??''; $user_plan=$estudio['plan_id']??$estudio['p
                     </button>
                   </div>
                 </td>
-              </tr>
+                <?php return ob_get_clean();
+              };
+              $gi = 0;
+              foreach ($grupos as $g):
+                $n = count($g['docs']);
+                if ($n === 1):
+                  // Grupo de un solo documento: fila normal, sin desglose
+                  ?>
+                  <tr><?= $render_doc_cells($g['docs'][0], true) ?></tr>
+                <?php else:
+                  $gi++;
+                  // Fila padre (resumen del grupo, clic para desglosar)
+                  ?>
+                  <tr class="group-row" onclick="toggleGrupo(<?= $gi ?>)">
+                    <td>
+                      <div style="display:flex;align-items:center;gap:8px">
+                        <svg class="group-arrow" id="arrow-<?= $gi ?>" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                        <div style="width:32px;height:32px;background:#dbeafe;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">🗂️</div>
+                        <div style="font-weight:700;color:var(--gris-900);font-size:13px"><?= $n ?> archivos</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div style="font-weight:600;color:var(--gris-900);font-size:13px"><?= e($g['razon_social']) ?></div>
+                      <div style="font-size:11px;color:var(--gris-400)"><?= e($g['ruc']) ?></div>
+                    </td>
+                    <td>
+                      <?php if (empty($g['cats'])): ?>—<?php else: $cats=array_values($g['cats']); foreach (array_slice($cats,0,2) as $c): ?>
+                      <span style="background:<?= e($c['color']??'#f1f5f9') ?>;color:<?= e($c['color_texto']??'#475569') ?>;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:600;margin-right:3px"><?= e($c['nombre']) ?></span>
+                      <?php endforeach; if (count($cats)>2): ?><span style="font-size:11px;color:var(--gris-400)">+<?= count($cats)-2 ?></span><?php endif; endif; ?>
+                    </td>
+                    <td><span class="badge badge-blue badge-none"><?= e($g['periodo']) ?></span></td>
+                    <td class="text-muted"><?= $g['total_tamanio']?formatBytes($g['total_tamanio']):'—' ?></td>
+                    <td class="text-muted" style="font-size:12px"><?= tiempoRelativo($g['ultimo']) ?></td>
+                    <td>
+                      <span class="badge <?= $g['total_descargas']>0?'badge-green':'badge-gray' ?> badge-none"><?= $g['total_descargas'] ?> <?= $g['total_descargas']==1?'vez':'veces' ?></span>
+                    </td>
+                    <td></td>
+                  </tr>
+                  <?php foreach ($g['docs'] as $doc): ?>
+                  <tr class="child-row child-g<?= $gi ?>" style="display:none"><?= $render_doc_cells($doc, false) ?></tr>
+                  <?php endforeach; ?>
+                <?php endif; ?>
               <?php endforeach; ?>
             </tbody>
           </table>
@@ -229,6 +302,14 @@ $user_nombre=$estudio['nombre']??''; $user_plan=$estudio['plan_id']??$estudio['p
   </div>
 </div>
 <script>
+function toggleGrupo(gi) {
+  var rows  = document.querySelectorAll('.child-g' + gi);
+  var arrow = document.getElementById('arrow-' + gi);
+  if (!rows.length) return;
+  var abrir = rows[0].style.display === 'none';
+  rows.forEach(function(r){ r.style.display = abrir ? 'table-row' : 'none'; });
+  if (arrow) arrow.classList.toggle('open', abrir);
+}
 function cerrarModal() { document.getElementById('modalEliminar').classList.remove('open'); }
 function confirmarEliminar(id, nombre) {
   document.getElementById('eliminarDocId').value = id;
