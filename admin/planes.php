@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($action === 'crear') {
         $nombre   = trim($_POST['nombre'] ?? '');
-        $precio   = (float)($_POST['precio'] ?? 0);
+  /*       $precio   = (float)($_POST['precio'] ?? 0); */
+        $precio   = $_POST['precio'] ;
         $limite   = (int)($_POST['limite_empresas'] ?? 10);
         $dias     = (int)($_POST['dias_acceso'] ?? 30);
         $desc     = trim($_POST['descripcion'] ?? '');
@@ -25,7 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'editar') {
         $pid    = $_POST['plan_id'] ?? '';
         $nombre = trim($_POST['nombre'] ?? '');
-        $precio = (float)($_POST['precio'] ?? 0);
+      /*   $precio = (float)($_POST['precio'] ?? 0); */
+      $precio   = $_POST['precio'] ;
         $limite = (int)($_POST['limite_empresas'] ?? 10);
         $dias   = (int)($_POST['dias_acceso'] ?? 30);
         $desc   = trim($_POST['descripcion'] ?? '');
